@@ -1,0 +1,9 @@
+*.tif
+*.png
+*.pyc
+lightning_logs/
+debug/
+out/
+dataset/
+prepare_data/dataset
+.ipynb_checkpoints/
