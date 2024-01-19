@@ -5,7 +5,7 @@ import torch
 class SegFormer(nn.Module):
     def __init__(self, pretrained_name):
         super().__init__()
-        self.model = SegformerForSemanticSegmentation.from_pretrained(pretrained_name, num_labels = 1, ignore_mismatched_sizes=True)
+        self.model = SegformerForSemanticSegmentation.from_pretrained(pretrained_name, num_labels = 4, ignore_mismatched_sizes=True)
     
     def forward(self, x):
         out = self.model(x)

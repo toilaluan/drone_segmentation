@@ -15,7 +15,7 @@ def make_callbacks():
     callbacks = []
     callbacks.append(
         pl.callbacks.ModelCheckpoint(
-            monitor="val_iou",
+            monitor="iou_simple",
             mode="max",
             save_top_k=1,
             save_last=True,
@@ -56,7 +56,7 @@ if __name__ == '__main__':
         cfg = yaml.load(f, Loader=yaml.FullLoader)
         cfg = EasyDict(cfg)
         cfg.data.img_size = eval(cfg.data.img_size)
-    task = Task.init(project_name='drone_segmentation', task_name=cfg.model.backbone_name)
+    task = Task.init(project_name='final_building_type_luan', task_name=cfg.model.backbone_name)
     task.set_parameters(cfg)    
     train_dataloader, val_dataloader, transforms = prepare_data(cfg, args)
     

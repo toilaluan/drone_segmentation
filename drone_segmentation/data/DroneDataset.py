@@ -12,14 +12,19 @@ class DroneDataset(Dataset):
     def __init__(self, root_folder: str, img_size: tuple, is_training: bool):
         self.img_size = img_size
         self.is_training = is_training
-        self.image_dir = os.path.join(root_folder, "image")
-        self.mask_dir = os.path.join(root_folder, "mask")
-        self.image_paths = glob(self.image_dir + "/*.png")
-        self.select_big = A.Compose(
+        if is_training:
+            mode = 'train'
+        else:
+            mode = 'val'
+        self.image_dir = os.path.join(root_folder, mode, "images")
+        self.mask_dir = os.path.join(root_folder, mode, "masks")
+        print(self.image_dir)
+        self.image_paths = glob(self.image_dir + "/*")
+        self.augment = A.Compose(
             [
                 A.RandomResizedCrop(
-                    height=img_size[0]*4,
-                    width=img_size[1]*4,
+                    height=img_size[0],
+                    width=img_size[1],
                     scale=(0.5, 1),
                     ratio=(0.9, 1.1),
                     always_apply=True,
@@ -31,7 +36,6 @@ class DroneDataset(Dataset):
                 A.RandomBrightnessContrast(p=0.3),
             ]
         )
-        self.select_small = A.CenterCrop(height=img_size[0], width=img_size[1])
     def __len__(self):
         return len(self.image_paths) 
     
@@ -52,7 +56,7 @@ class DroneDataset(Dataset):
         else:
             img = self.resize(img, self.img_size)
             mask = self.resize(mask, self.img_size)
-        mask = mask > 0
+        # mask = mask > 0
         img = Image.fromarray(img)
         
         return img, mask
@@ -78,10 +82,9 @@ class Collator(object):
                 cv2.imwrite(os.path.join(self.visualize_dir, f"mask_{i}.png"), mask*255)
             self.visualized = True
         imgs = [self.transform(img) for img in imgs]
-        masks = [torch.FloatTensor(mask).unsqueeze(0) for mask in masks]
+        masks = [torch.LongTensor(mask).unsqueeze(0) for mask in masks]
         imgs = torch.stack(imgs, dim=0)
-        masks = torch.stack(masks, dim=0)
-        
+        masks = torch.stack(masks, dim=0).squeeze(1)
         return imgs, masks
     
     

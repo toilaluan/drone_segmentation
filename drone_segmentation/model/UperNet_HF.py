@@ -2,10 +2,11 @@ from transformers import UperNetConfig, UperNetForSemanticSegmentation
 import torch.nn as nn
 import torch
 
+
 class UperNet_HF(nn.Module):
-    def __init__(self, pretrained_name):
+    def __init__(self, pretrained_name, num_labels):
         super().__init__()
-        self.model = UperNetForSemanticSegmentation.from_pretrained(pretrained_name, num_labels = 1, ignore_mismatched_sizes=True)
+        self.model = UperNetForSemanticSegmentation.from_pretrained(pretrained_name, num_labels = num_labels, ignore_mismatched_sizes=True)
     
     def forward(self, x):
         out = self.model(x)

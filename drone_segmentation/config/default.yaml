@@ -1,11 +1,15 @@
 data:
-    root_folder: 'dataset/1024_512'
+    root_folder: 'dataset/building_type_1024'
     img_size: (512,512)
     test_folder: '/mnt/data/RasterMask_v11/test_images'
 model:
-    backbone_name: 'openmmlab/upernet-swin-tiny'
+    backbone_name: 'nvidia/segformer-b3-finetuned-ade-512-512'
+    upernet_cfg:
+        pool_scales: [1,2,3,6]
+        num_labels: 5
+        hidden_size: 256
 training:
-    lr: 0.0001
+    lr: 0.0005
     weight_decay: 0.00001
     gradient_clip_val: 25.0
     accumulate_grad_batches: 1

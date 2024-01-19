@@ -2,14 +2,15 @@ import glob
 import cv2
 import numpy as np
 import os
+import shutil
 from tqdm import tqdm
 
-SAVE_FOLDER = "/mnt/data/luantranthanh/pyramid_segmentation/dataset/building_512_binary"
+SAVE_FOLDER = "/mnt/data/luantranthanh/pyramid_segmentation/dataset/full_class_1024"
 IMAGE_FOLDER = "/mnt/data/RasterMask_v11/TrueOrtho"
-MASK_FOLDER = "/mnt/data/RasterMask_v11/Mask2_Building"
+MASK_FOLDER = "/mnt/data/RasterMask_v11/Mask2"
 TRAIN_TXT = "/mnt/data/RasterMask_v11/ImageSet/train.txt"
 VAL_TXT = "/mnt/data/RasterMask_v11/ImageSet/val.txt"
-
+shutil.rmtree(SAVE_FOLDER, ignore_errors=True)
 os.makedirs(SAVE_FOLDER, exist_ok=True)
 with open(TRAIN_TXT, "r") as f:
     TRAIN_LIST = f.readlines()
@@ -38,9 +39,10 @@ def check_area_mask(mask):
 
 def cut_a_image(id, mode):
     image_path = os.path.join(IMAGE_FOLDER, f"Ortho_{id}.tif")
-    mask_path = os.path.join(MASK_FOLDER, f"Mask_Building_{id}.tif")
+    mask_path = os.path.join(MASK_FOLDER, f"Mask_{id}.tif")
     image = cv2.imread(image_path)
     mask = cv2.imread(mask_path, 0)
+    print(np.unique(mask))
     W, H, C = image.shape
     assert image[:, :, 0].shape == mask.shape
     cols = np.math.floor((H - SIZE) / STRIDE + 1)
